@@ -3,11 +3,16 @@
 
 #include "config_common.h"
 
+// lighting
 #ifndef LIGHT_CONFIG_H
 #define BACKLIGHT_BREATHING
 #define BREATHING_PERIOD 5
 #endif
 
+// faux clicky sounds
+#define AUDIO_CLICKY
+
+// audio features
 #ifdef AUDIO_ENABLE
     #define STARTUP_SONG SONG(MARIO_MUSHROOM)
     // #define STARTUP_SONG SONG(NO_SOUND)
