@@ -92,35 +92,43 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_LOWER] = LAYOUT_planck_grid(
     DE_CIRC,  DE_AT,    _______,  DE_EURO,  _______,  _______,  _______,  DE_UE,    _______,  DE_OE,    KC_INS,   KC_DEL,
     _______,  DE_AE,    DE_SS,    _______,  _______,  _______,  _______,  _______,  KC_PGUP,  KC_UP,    KC_PGDN,  _______,
-    _______,  DE_PIPE,  _______,  _______,  _______,  _______,  _______,  KC_HOME,  KC_LEFT,  KC_DOWN,  KC_RIGHT, KC_END,
+    _______,  DE_LESS,  _______,  _______,  _______,  _______,  _______,  KC_HOME,  KC_LEFT,  KC_DOWN,  KC_RIGHT, KC_END,
     _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______
   ),
   /* Adjust (Lower + Raise)
   * ,----------------------------------------------------------------------------------------------------------------------.
-  * | Play/Pa| Stop    | Prev    | Next    |         | MU_TOGG |         |         |         |         |         | Reset   |
+  * | Play/Pa| Stop    | Prev    | Next    |         | MU_TOGG | CK_TOGG |         |         |         |         | Reset   |
   * |--------+---------+---------+---------+---------+---------|---------+---------+---------+---------+---------+---------|
   * | Mute   | VOL_DEC | VOL_INC |         |         | MU_CYC  |         |         |         |         |         |         |
   * |--------+---------+---------+---------+---------+---------|---------+---------+---------+---------+---------+---------|
-  * | BL_TOGG| BL_DEC  | BL_INC  | BL_MAX  |         | CK_TOGG |         |         |         |         |         |         |
+  * | BL_TOGG| BL_DEC  | BL_INC  | BL_MAX  |         |         |         |         |         |         |         |         |
   * |--------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------|
   * | BL_BREA|         |         |         |         |                   |         |         | Sleep   | Wake    |         |
   * `----------------------------------------------------------------------------------------------------------------------'
   */
   [_ADJUST] = LAYOUT_planck_grid(
-    KC_MPLY,  KC_MSTP,  KC_MNXT,  KC_MPRV,  _______,  MU_TOG,   _______,  _______,  _______,  _______,  _______,  RESET,
+    KC_MPLY,  KC_MSTP,  KC_MNXT,  KC_MPRV,  _______,  MU_TOG,   CK_TOGG,  _______,  _______,  _______,  _______,  RESET,
     KC_MUTE,  KC_VOLD,  KC_VOLU,  _______,  _______,  MU_MOD,   _______,  _______,  _______,  _______,  _______,  _______,
-    BL_TOGG,  BL_DEC,   BL_INC,   BL_ON,    _______,  CK_TOGG,  _______,  _______,  _______,  _______,  _______,  _______,
+    BL_TOGG,  BL_DEC,   BL_INC,   BL_ON,    _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,
     BL_BRTG,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  KC_SLEP,  KC_WAKE,  _______
   )
 
 };
 
 #ifdef AUDIO_ENABLE
-  float plover_song[][2]     = SONG(PLOVER_SOUND);
-  float plover_gb_song[][2]  = SONG(PLOVER_GOODBYE_SOUND);
+  float layersound[][2] = SONG(COIN_SOUND);
 #endif
 
 uint32_t layer_state_set_user(uint32_t state) {
+  uint8_t layer = biton32(state);
+  switch (layer) {
+      case 3:
+        PLAY_SONG(layersound);
+        break;
+      default:
+        break;
+    }
+
   return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
 }
 
@@ -128,7 +136,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case QWERTY:
       if (record->event.pressed) {
-        print("mode just switched to qwerty and this is a huge string\n");
         set_single_persistent_default_layer(_QWERTY);
       }
       return false;
@@ -194,12 +201,12 @@ void dip_update(uint8_t index, bool active) {
     case 0:
       if (active) {
         #ifdef AUDIO_ENABLE
-          PLAY_SONG(plover_song);
+          //PLAY_SONG(plover_song);
         #endif
         layer_on(_ADJUST);
       } else {
         #ifdef AUDIO_ENABLE
-          PLAY_SONG(plover_gb_song);
+          //PLAY_SONG(plover_gb_song);
         #endif
         layer_off(_ADJUST);
       }
