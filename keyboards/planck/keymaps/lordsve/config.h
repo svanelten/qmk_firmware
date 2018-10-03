@@ -14,19 +14,8 @@
 
 // audio features
 #ifdef AUDIO_ENABLE 
-    #define STARTUP_SONG SONG(E1M1_DOOM)
-    #define GOODBYE_SONG SONG(MARIO_MUSHROOM)
-    // #define STARTUP_SONG SONG(NO_SOUND)
-
-    #define DEFAULT_LAYER_SONGS { SONG(QWERTY_SOUND), \
-                                  SONG(COLEMAK_SOUND), \
-                                  SONG(DVORAK_SOUND) \
-                                }
-    /* #define DEFAULT_LAYER_SONGS { SONG(COIN_SOUND),      \
-    //                               SONG(MARIO_MUSHROOM),  \
-    //                               SONG(CHROMATIC_SOUND)  \
-                                 }
-    */
+    #define STARTUP_SONG SONG(MARIO_MUSHROOM)
+    #define GOODBYE_SONG SONG(MARIO_GAMEOVER)
 #endif
 
 /*  
