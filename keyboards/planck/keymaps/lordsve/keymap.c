@@ -145,7 +145,9 @@ uint32_t layer_state_set_user(uint32_t state) {
   uint8_t layer = biton32(state);
   switch (layer) {
       case 3:
+#ifdef AUDIO_ENABLE
         PLAY_SONG(layersound);
+#endif
         break;
       default:
         break;
