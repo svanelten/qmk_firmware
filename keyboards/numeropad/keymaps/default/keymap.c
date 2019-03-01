@@ -15,10 +15,20 @@
  */
 #include QMK_KEYBOARD_H
 
+// include german keymap for umlauts and special chars
+#include "keymap_extras/keymap_german.h"
+
 // Defines the keycodes used by our macros in process_record_user
-enum custom_keycodes {
+enum custom_keycodes
+{
   MC_GREETS = SAFE_RANGE,
-  MC_WHATEVS
+  MC_GSTAT, // git status
+  MC_GBRA,  // git branch
+  MC_GADD,  // git add .
+  MC_GCOM,  // git commit -m ""
+  MC_GREM,  // git reset
+  MC_GRST,  // git reset --hard
+
 };
 
 // Name all the layers
@@ -38,7 +48,7 @@ enum layers {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   /*  BASE
    *  |---------------------------------------|
-   *  | L_BASE  | L_MACRO |         |         |
+   *  | L_BASE  | L_MACRO |  L_GIT  | L_FSCK  |
    *  |---------------------------------------|
    *  | NumLock | /       | *       | -       |
    *  |---------------------------------------|
@@ -61,9 +71,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_P0,              KC_PDOT 
   ),
 
-  /*  BASE
+  /*  MACRO
    *  |---------------------------------------|
-   *  | L_BASE  | L_MACRO |         |         |
+   *  | L_BASE  | L_MACRO |  L_GIT  | L_FSCK  |
    *  |---------------------------------------|
    *  | NumLock | /       | *       | -       |
    *  |---------------------------------------|
@@ -79,7 +89,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   
   [_MACRO] = LAYOUT(
         KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
-        KC_M,  KC_PSLS,  KC_PAST,  KC_PMNS, 
+        KC_M,     KC_PSLS,  KC_PAST,  KC_PMNS, 
         KC_P7,    KC_P8,    KC_P9,    KC_PPLS, 
         KC_P4,    KC_P5,    KC_P6, 
         KC_P1,    KC_P2,    KC_P3,    KC_PENT,
@@ -88,32 +98,32 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   /*  GIT
    *  |---------------------------------------|
-   *  | L_BASE  | L_MACRO |         |         |
+   *  | L_BASE  | L_MACRO |  L_GIT  | L_FSCK  |
    *  |---------------------------------------|
-   *  | NumLock | /       | *       | -       |
+   *  | stat    | bbranch | reset   | remove  |
    *  |---------------------------------------|
    *  | 7       | 8       | 9       |         |
-   *  |-----------------------------| +       |
+   *  |-----------------------------| add     |
    *  | 4       | 5       | 6       |         |
    *  |---------------------------------------|
    *  | 1       | 2       | 3       |         |
-   *  |-----------------------------| Enter   |
-   *  | MC_GREETS         | .       |         |
+   *  |-----------------------------| enter   |
+   *  | commit            | .       |         |
    *  |---------------------------------------|
    */
   
   [_GIT] = LAYOUT(
         KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
-        KC_G,  KC_PSLS,  KC_PAST,  KC_PMNS, 
-        KC_P7,    KC_P8,    KC_P9,    KC_PPLS, 
+        MC_GSTAT, MC_GBRA,  MC_GRST,  MC_GREM, 
+        KC_P7,    KC_P8,    KC_P9,    MC_GADD, 
         KC_P4,    KC_P5,    KC_P6, 
         KC_P1,    KC_P2,    KC_P3,    KC_PENT,
-        MC_GREETS,          KC_PDOT 
+        MC_GCOM,            KC_PDOT 
   ),
 
   /*  FSCK
    *  |---------------------------------------|
-   *  | L_BASE  | L_MACRO |         |         |
+   *  | L_BASE  | L_MACRO |  L_GIT  | L_FSCK  |
    *  |---------------------------------------|
    *  | NumLock | /       | *       | -       |
    *  |---------------------------------------|
@@ -129,7 +139,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   
   [_FSCK] = LAYOUT(
         KC_TRNS,  KC_TRNS,  KC_TRNS,  KC_TRNS,
-        KC_F,  KC_PSLS,  KC_PAST,  KC_PMNS, 
+        KC_F,     KC_PSLS,  KC_PAST,  KC_PMNS, 
         KC_P7,    KC_P8,    KC_P9,    KC_PPLS, 
         KC_P4,    KC_P5,    KC_P6, 
         KC_P1,    KC_P2,    KC_P3,    KC_PENT,
@@ -137,15 +147,64 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   )
 };
 
+/*
+  MC_GSTAT, // git status
+  MC_GBRA,  // git branch
+  MC_GADD,  // git add .
+  MC_GCOM,  // git commit -m ""
+*/
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case MC_GREETS:
       if (record->event.pressed) {
         // when keycode MC_GREETS is pressed send string and do nothing else
-        SEND_STRING("Viele Grüße," SS_TAP(X_ENTER) "sve");
+        SEND_STRING("Viele Gr" SS_TAP(X_LBRACKET) SS_TAP(X_MINUS) "e," SS_TAP(X_ENTER) "sve");
         return true;
       } else {
         // nothing on release
+      }
+      break;
+    case MC_GSTAT:
+      if (record->event.pressed)
+      {
+        SEND_STRING("git status" SS_TAP(X_ENTER));
+        return true;
+      }
+      break;
+    case MC_GBRA:
+      if (record->event.pressed)
+      {
+        SEND_STRING("git branch" SS_TAP(X_ENTER));
+        return true;
+      }
+      break;
+    case MC_GADD:
+      if (record->event.pressed)
+      {
+        SEND_STRING("git add ." SS_TAP(X_ENTER));
+        return true;
+      }
+      break;
+    case MC_GREM:
+      if (record->event.pressed)
+      {
+        SEND_STRING("git reset" SS_TAP(X_ENTER));
+        return true;
+      }
+      break;
+    case MC_GCOM:
+      if (record->event.pressed)
+      {
+        SEND_STRING("git commit " SS_TAP(X_SLASH) "m " SS_LSFT("2") SS_LSFT("2") SS_TAP(X_LEFT));
+        return true;
+      }
+      break;
+    case MC_GRST:
+      if (record->event.pressed)
+      {
+        SEND_STRING("git reset " SS_TAP(X_SLASH) SS_TAP(X_SLASH) "hard");
+        return true;
       }
       break;
   }
@@ -225,42 +284,4 @@ void matrix_scan_user(void)
     }
   }
 }
-  /*
-void matrix_scan_user(void) {
-    uint8_t layer = biton32(layer_state);
 
-    // PORTB &= ~(1<<1);
-            PORTB |= (1<<1);
-
-    // PORTB &= ~(1<<3);
-    switch (layer) {
-        case 1:
-            PORTB &= ~(1<<1);
-
-            // PORTB |= (1<<1);
-            break;
-        // case 3:
-        //     PORTB |= (1<<2);
-        //     break;
-        default:
-            break;
-    }
-
-  // if ((1<<3 & state) != 0) {
-  //     dprint("Layer 3: on\n");
-  //     PORTB |= (1<<2);
-  // } else {
-  //     dprint("Layer 3: off\n");
-  //     PORTB &= ~(1<<2);
-  // }
-}
-*/
-
-// TBD when physical led is installed
-// void led_set_user(uint8_t usb_led) {
-// 	if (usb_led & (1 << USB_LED_NUM_LOCK)) {
-// 		DDRB |= (1 << 0); PORTB &= ~(1 << 0);
-// 	} else {
-// 		DDRB &= ~(1 << 0); PORTB &= ~(1 << 0);
-// 	}
-// }
