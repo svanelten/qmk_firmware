@@ -28,7 +28,9 @@ enum custom_keycodes
   MC_GCOM,  // git commit -m ""
   MC_GREM,  // git reset
   MC_GRST,  // git reset --hard
-
+  MC_GPUL,  // git pull
+  MC_GPSH,  // git push
+  MC_GLOG   // git log
 };
 
 // Name all the layers
@@ -117,7 +119,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         MC_GSTAT, MC_GBRA,  MC_GRST,  MC_GREM, 
         KC_P7,    KC_P8,    KC_P9,    MC_GADD, 
         KC_P4,    KC_P5,    KC_P6, 
-        KC_P1,    KC_P2,    KC_P3,    KC_PENT,
+        MC_GPUL,  MC_GPSH,  MC_GLOG,  KC_PENT,
         MC_GCOM,            KC_PDOT 
   ),
 
@@ -204,6 +206,27 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       if (record->event.pressed)
       {
         SEND_STRING("git reset " SS_TAP(X_SLASH) SS_TAP(X_SLASH) "hard");
+        return true;
+      }
+      break;
+    case MC_GPUL:
+      if (record->event.pressed)
+      {
+        SEND_STRING("git pull" SS_TAP(X_ENTER));
+        return true;
+      }
+      break;
+    case MC_GPSH:
+      if (record->event.pressed)
+      {
+        SEND_STRING("git push";
+        return true;
+      }
+      break;
+    case MC_GLOG:
+      if (record->event.pressed)
+      {
+        SEND_STRING("git log" SS_TAP(X_ENTER));
         return true;
       }
       break;
