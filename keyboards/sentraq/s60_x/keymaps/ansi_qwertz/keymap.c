@@ -16,10 +16,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 
-//make keymap a little easier to read
-#define _______ KC_TRNS
-#define XXXXXXX KC_NO
-
 #define ONESHOT_TAP_TOGGLE 2
 #define ONESHOT_TIMEOUT 1
 
@@ -160,11 +156,6 @@ const uint16_t PROGMEM fn_actions[] = {
     [F_GMLK] = ACTION_LAYER_TOGGLE(1),                  // Disable SpaceFn and Oneshot Shift
     [F_FUNC] = ACTION_LAYER_MOMENTARY(2),               // SpaceFn layout 1
     [F_OSLS] = ACTION_MODS_ONESHOT(MOD_LSFT)            // Oneshot Leftshift
-};
-
-const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
-{
-    return MACRO_NONE;
 };
 
 void matrix_init_user(void) {
