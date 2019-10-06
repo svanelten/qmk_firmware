@@ -48,3 +48,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // add a little more ego to this
 #undef PRODUCT
 #define PRODUCT "svanelten | hacked Corne"
+
+#define OLED_FONT_H "keyboards/crkbd/keymaps/svanelten/glcdfont.c"
